@@ -5,6 +5,19 @@ const form = document.getElementById("form-itens")
 const itensInput = document.getElementById("receber-item")
 const ulItens = document.getElementById("lista-de-itens")
 const ulItensComprados = document.getElementById("itens-comprados")
+const listaRecuperada = localStorage.getItem('listaDeItens')
+
+function atualizaLocalStorage() {
+    localStorage.setItem('listaDeItens', JSON.stringify(listaDeItens))
+}
+
+
+if (listaRecuperada){
+    listaDeItens = JSON.parse(listaRecuperada)
+    mostrarItem()
+}else {
+    listaDeItens = []
+}
 
 form.addEventListener('submit', function (event) {
     event.preventDefault()
@@ -30,6 +43,7 @@ function salvarItens() {
     }
     
     // impar campo
+    
     itensInput.value = ""
     itensInput.focus()
     
@@ -87,7 +101,8 @@ function mostrarItem() {
 
     deletarObjetos.forEach( i => {
         i.addEventListener('click', (evento) => {
-            itemSelectionado = evento.target.parentElement.parentElement.getAttribute('data-value')
+            valorDoElemento = evento.target.parentElement.parentElement.getAttribute('data-value')
+            listaDeItens.splice(valorDoElemento,1)
             mostrarItem()
         })
     })
@@ -101,6 +116,8 @@ function mostrarItem() {
             mostrarItem()
         })
     })
+
+    atualizaLocalStorage();
 }
 
 function salvarEdicao() {
@@ -109,5 +126,6 @@ function salvarEdicao() {
     console.log ('alterção:' + itemEditado)
     listaDeItens[itemAEditar].valor = itemEditado.value
     itemSelectionado = -1
+    atualizaLocalStorage();
     mostrarItem()
 }
